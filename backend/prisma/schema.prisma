@@ -1,0 +1,167 @@
+// Prisma schema — Controle de Estoque de Medicamentos e Produtos Veterinários
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------
+// Enums
+// ------------------------------------------------------------
+
+enum Perfil {
+  ADMIN
+  FUNCIONARIO
+}
+
+enum MotivoSaida {
+  VENDA
+  USO_CLINICO
+  AVARIA
+  VENCIMENTO
+  PERDA
+  OUTROS
+}
+
+// ------------------------------------------------------------
+// Usuários
+// ------------------------------------------------------------
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senhaHash String
+  perfil    Perfil   @default(FUNCIONARIO)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entradas Entrada[]
+  saidas   Saida[]
+
+  @@map("usuarios")
+}
+
+// ------------------------------------------------------------
+// Categorias
+// ------------------------------------------------------------
+
+model Categoria {
+  id        Int      @id @default(autoincrement())
+  nome      String   @unique
+  descricao String?
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  produtos Produto[]
+
+  @@map("categorias")
+}
+
+// ------------------------------------------------------------
+// Fornecedores
+// ------------------------------------------------------------
+
+model Fornecedor {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  cnpj      String?  @unique
+  telefone  String?
+  email     String?
+  endereco  String?
+  cidade    String?
+  estado    String?
+  cep       String?
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  produtos Produto[]
+  entradas Entrada[]
+
+  @@map("fornecedores")
+}
+
+// ------------------------------------------------------------
+// Produtos
+// ------------------------------------------------------------
+
+model Produto {
+  id              Int       @id @default(autoincrement())
+  nome            String
+  codigo          String    @unique
+  categoriaId     Int
+  categoria       Categoria @relation(fields: [categoriaId], references: [id])
+  fornecedorId    Int?
+  fornecedor      Fornecedor? @relation(fields: [fornecedorId], references: [id])
+  descricao       String?
+  unidadeMedida   String    @default("un")
+  quantidadeAtual Int       @default(0)
+  quantidadeMinima Int      @default(0)
+  valorCompra     Decimal   @default(0) @db.Decimal(10, 2)
+  valorVenda      Decimal   @default(0) @db.Decimal(10, 2)
+  lote            String?
+  dataValidade    DateTime?
+  ativo           Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  entradas Entrada[]
+  saidas   Saida[]
+
+  @@index([nome])
+  @@index([categoriaId])
+  @@index([dataValidade])
+  @@map("produtos")
+}
+
+// ------------------------------------------------------------
+// Entradas de estoque
+// ------------------------------------------------------------
+
+model Entrada {
+  id           Int        @id @default(autoincrement())
+  produtoId    Int
+  produto      Produto    @relation(fields: [produtoId], references: [id])
+  quantidade   Int
+  lote         String?
+  dataValidade DateTime?
+  valorCompra  Decimal    @default(0) @db.Decimal(10, 2)
+  fornecedorId Int?
+  fornecedor   Fornecedor? @relation(fields: [fornecedorId], references: [id])
+  observacao   String?
+  usuarioId    Int
+  usuario      Usuario    @relation(fields: [usuarioId], references: [id])
+  dataEntrada  DateTime   @default(now())
+
+  @@index([produtoId])
+  @@index([dataEntrada])
+  @@map("entradas")
+}
+
+// ------------------------------------------------------------
+// Saídas de estoque
+// ------------------------------------------------------------
+
+model Saida {
+  id           Int         @id @default(autoincrement())
+  produtoId    Int
+  produto      Produto     @relation(fields: [produtoId], references: [id])
+  quantidade   Int
+  motivo       MotivoSaida @default(OUTROS)
+  clienteTutor String?
+  observacao   String?
+  usuarioId    Int
+  usuario      Usuario     @relation(fields: [usuarioId], references: [id])
+  dataSaida    DateTime    @default(now())
+
+  @@index([produtoId])
+  @@index([dataSaida])
+  @@map("saidas")
+}
