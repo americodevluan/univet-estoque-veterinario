@@ -23,12 +23,9 @@ const diasAFrente = (dias) => {
 
 async function main() {
   console.log('Limpando dados existentes...');
-  await prisma.saida.deleteMany();
-  await prisma.entrada.deleteMany();
-  await prisma.produto.deleteMany();
-  await prisma.fornecedor.deleteMany();
-  await prisma.categoria.deleteMany();
-  await prisma.usuario.deleteMany();
+  await prisma.$executeRawUnsafe(
+    'TRUNCATE TABLE "saidas", "entradas", "produtos", "fornecedores", "categorias", "usuarios" RESTART IDENTITY CASCADE'
+  );
 
   // ------------------------------------------------------------
   // Usuários
