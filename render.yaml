@@ -30,10 +30,7 @@ services:
       - key: JWT_EXPIRES_IN
         value: 8h
       - key: CORS_ORIGIN
-        fromService:
-          name: univet-frontend
-          type: web
-          property: host
+        value: https://univet-frontend.onrender.com
       - key: SEED_ON_START
         value: "true"
 
@@ -44,12 +41,6 @@ services:
     name: univet-frontend
     runtime: static
     rootDir: frontend
-    buildCommand: npm install && echo "VITE_API_URL=https://$API_URL/api" > .env && npm run build
+    buildCommand: npm install && echo "VITE_API_URL=https://univet-backend.onrender.com/api" > .env && npm run build
     staticPublishPath: ./dist
     autoDeploy: true
-    envVars:
-      - key: API_URL
-        fromService:
-          name: univet-backend
-          type: web
-          property: host
