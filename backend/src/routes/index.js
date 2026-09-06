@@ -8,5 +8,8 @@ router.use('/fornecedores', require('./fornecedorRoutes'));
 router.use('/produtos', require('./produtoRoutes'));
 router.use('/entradas', require('./entradaRoutes'));
 router.use('/saidas', require('./saidaRoutes'));
+router.use('/movimentacoes', require('./movimentacaoRoutes'));
+router.use('/alertas', require('./alertaRoutes'));
+router.use('/dashboard', require('./dashboardRoutes'));
 
 module.exports = router;
