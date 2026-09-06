@@ -9,7 +9,8 @@ build/
 .env
 .env.local
 .env.production
-*.env
+.env.*
+!.env.example
 
 # Logs
 *.log

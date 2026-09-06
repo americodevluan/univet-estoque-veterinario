@@ -15,6 +15,13 @@
   "prisma": {
     "seed": "node prisma/seed.js"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/tests/setEnv.js"
+    ],
+    "globalSetup": "<rootDir>/tests/globalSetup.js"
+  },
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
