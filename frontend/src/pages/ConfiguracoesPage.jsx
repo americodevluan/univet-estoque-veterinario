@@ -17,7 +17,7 @@ export default function ConfiguracoesPage() {
       <div className="card p-4 mb-3">
         <h2 className="h6 fw-bold mb-2">Sobre o sistema</h2>
         <p className="text-muted small mb-0">
-          <strong>VetStock</strong> — Sistema web de controle de estoque de medicamentos e produtos veterinários.
+          <strong>UniVet</strong> — Controle de estoque da Clínica Veterinária Fernanda Calixto.
           Projeto Integrador (PI) desenvolvido com React, Node.js, Express, Prisma e PostgreSQL.
           API REST documentada em <code>/api</code> para futura integração com o sistema principal da clínica.
         </p>

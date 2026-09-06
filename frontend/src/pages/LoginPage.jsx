@@ -26,14 +26,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="vet-login p-3">
-      <div className="card shadow-lg p-4 p-md-5">
-        <div className="text-center mb-4">
-          <div className="d-inline-flex align-items-center justify-content-center bg-primary-light rounded-3 p-3 mb-3">
-            <i className="bi bi-heart-pulse-fill fs-1 text-primary"></i>
+    <div className="vet-login">
+      <div className="card p-4 p-md-5">
+        <div className="univet-login-brand mb-4">
+          <img className="univet-login-logo" src="/logo-clinica.jpg" alt="Clínica Veterinária Fernanda Calixto" />
+          <div>
+            <span className="univet-pill">Acesso seguro da clínica</span>
+            <h1 className="h2 fw-bold mt-3 mb-2">Bem-vinda ao UniVet</h1>
+            <p className="text-muted mb-0">
+              Controle de estoque da Clínica Veterinária Fernanda Calixto.
+            </p>
           </div>
-          <h1 className="h4 fw-bold mb-1">VetStock</h1>
-          <p className="text-muted mb-0">Controle de Estoque Veterinário</p>
         </div>
 
         {erro && (
@@ -75,14 +78,16 @@ export default function LoginPage() {
                 Entrando...
               </>
             ) : (
-              'Entrar'
+            'Entrar na página inicial'
             )}
           </button>
         </form>
 
-        <p className="text-muted small text-center mt-4 mb-0">
-          Demonstração: admin@clinica.com / admin123 · funcionario@clinica.com / func123
-        </p>
+        <div className="univet-login-highlight small text-muted p-3 mt-4">
+          <strong>Acesso de demonstração</strong><br />
+          Administrador: admin@clinica.com / admin123<br />
+          Funcionário: funcionario@clinica.com / func123
+        </div>
       </div>
     </div>
   );

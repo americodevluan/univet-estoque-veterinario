@@ -110,7 +110,7 @@ export default function RelatoriosPage() {
       {/* Conteúdo do relatório (área impressa) */}
       <div className="card p-4" ref={printRef}>
         <div className="d-none d-print-block text-center mb-3">
-          <h1 className="h5 fw-bold">VetStock — {config.titulo}</h1>
+          <h1 className="h5 fw-bold">UniVet — {config.titulo}</h1>
           <div className="small">Gerado em {new Date().toLocaleString('pt-BR')}</div>
         </div>
         <h2 className="h6 fw-bold d-print-none mb-3">{config.titulo}</h2>

@@ -112,10 +112,10 @@ function Sidebar() {
   return (
     <div className="vet-sidebar d-flex flex-column p-3">
       <div className="vet-logo d-flex align-items-center gap-2 mb-4 px-2">
-        <i className="bi bi-heart-pulse-fill fs-3"></i>
+        <img className="vet-logo-image" src="/logo-clinica.jpg" alt="UniVet" />
         <div>
-          <div className="fw-bold fs-5 lh-1">VetStock</div>
-          <div className="small opacity-75">Estoque Veterinário</div>
+          <div className="fw-bold fs-5 lh-1">UniVet</div>
+          <div className="small opacity-75">Clínica Veterinária</div>
         </div>
       </div>
 
@@ -163,10 +163,10 @@ export default function MainLayout() {
         <header className="vet-topbar d-flex align-items-center justify-content-between px-3 px-md-4 py-2">
           <div className="d-flex align-items-center gap-2">
             <span className="d-lg-none fw-bold text-primary">
-              <i className="bi bi-heart-pulse-fill me-1"></i>VetStock
+              <i className="bi bi-heart-pulse-fill me-1"></i>UniVet
             </span>
             <span className="text-muted d-none d-sm-inline small">
-              Controle de estoque de medicamentos e produtos veterinários
+              Clínica Veterinária Fernanda Calixto
             </span>
           </div>
           <div className="d-flex align-items-center gap-2">
@@ -188,7 +188,7 @@ export default function MainLayout() {
         </main>
 
         <footer className="text-center text-muted small py-3 border-top bg-white">
-          VetStock — Projeto Integrador · Controle de Estoque Veterinário
+          UniVet — Projeto Integrador · Clínica Veterinária Fernanda Calixto
         </footer>
       </div>
     </div>

@@ -1,32 +1,36 @@
 /* ============================================================
-   VetStock — Tema do sistema de controle de estoque veterinário
-   Identidade: clínica veterinária, fundo claro, tons de verde-teal
+   UniVet — identidade visual da Clínica Veterinária Fernanda Calixto
    ============================================================ */
 
 :root {
-  --vet-primary: #0f9d7a;
-  --vet-primary-dark: #0c7d61;
-  --vet-primary-light: #e6f5f0;
-  --vet-sidebar: #0b3d33;
-  --vet-sidebar-hover: #12544a;
-  --vet-bg: #f4f7f6;
-  --vet-card-border: #e6ecea;
+  --vet-primary: #b85e74;
+  --vet-primary-dark: #8f3c53;
+  --vet-primary-light: #fbe8ee;
+  --vet-sidebar: #252936;
+  --vet-sidebar-hover: #3e4353;
+  --vet-bg: #fff8f7;
+  --vet-card-border: rgba(95, 121, 131, 0.18);
   --vet-danger: #dc3545;
-  --vet-warning: #f59e0b;
-  --vet-success: #16a34a;
-  --vet-radius: 0.75rem;
-  --vet-shadow: 0 1px 3px rgba(16, 42, 36, 0.08), 0 4px 14px rgba(16, 42, 36, 0.06);
+  --vet-warning: #956038;
+  --vet-success: #3e7c5d;
+  --vet-radius: 1.25rem;
+  --vet-shadow: 0 16px 42px rgba(103, 93, 128, 0.14);
 
   --bs-primary: var(--vet-primary);
-  --bs-primary-rgb: 15, 157, 122;
+  --bs-primary-rgb: 184, 94, 116;
   --bs-link-color: var(--vet-primary);
   --bs-link-hover-color: var(--vet-primary-dark);
 }
 
 body {
-  background-color: var(--vet-bg);
-  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
-  color: #1c2b27;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 182, 193, 0.42), transparent 32%),
+    radial-gradient(circle at top right, rgba(152, 251, 152, 0.26), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(135, 206, 235, 0.3), transparent 30%),
+    linear-gradient(180deg, #fffdfd, #fff8f7 40%, #f6fcff);
+  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #24333d;
 }
 
 /* Botões */
@@ -58,17 +62,18 @@ body {
 
 /* Sidebar */
 .vet-sidebar {
-  background: linear-gradient(180deg, var(--vet-sidebar) 0%, #082d26 100%);
+  background: linear-gradient(180deg, var(--vet-sidebar) 0%, #1d2029 100%);
   min-height: 100vh;
   width: 240px;
 }
 
 .vet-sidebar .nav-link {
   color: rgba(255, 255, 255, 0.78);
-  border-radius: 0.5rem;
-  padding: 0.55rem 0.9rem;
-  margin-bottom: 0.2rem;
-  font-size: 0.92rem;
+  border-radius: 1rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .vet-sidebar .nav-link:hover {
@@ -78,7 +83,8 @@ body {
 
 .vet-sidebar .nav-link.active {
   color: #fff;
-  background-color: var(--vet-primary);
+  background: linear-gradient(135deg, #ffb6c1, #dda0dd);
+  color: #4f3040;
 }
 
 .vet-sidebar .nav-link i {
@@ -91,12 +97,21 @@ body {
 }
 
 .vet-sidebar .vet-logo i {
-  color: #5eead4;
+  color: #ffb6c1;
+}
+
+.vet-sidebar .vet-logo-image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(184, 94, 116, 0.28);
 }
 
 /* Topbar */
 .vet-topbar {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--vet-card-border);
 }
 
@@ -133,14 +148,51 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0b3d33 0%, #0f9d7a 100%);
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255, 182, 193, 0.65), transparent 30%),
+    radial-gradient(circle at 90% 15%, rgba(152, 251, 152, 0.35), transparent 28%),
+    linear-gradient(135deg, #252936 0%, #3e4353 45%, #b85e74 100%);
 }
 
 .vet-login .card {
-  border: none;
-  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 1.875rem;
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 50px rgba(93, 91, 124, 0.25);
+  backdrop-filter: blur(14px);
+}
+
+.univet-login-brand {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1.35rem;
+  align-items: center;
+}
+
+.univet-login-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 1.75rem;
+  box-shadow: 0 18px 40px rgba(184, 94, 116, 0.22);
+}
+
+.univet-pill {
+  display: inline-flex;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 800;
+  background: rgba(221, 160, 221, 0.22);
+  color: #825b8a;
+}
+
+.univet-login-highlight {
+  border: 1px solid rgba(184, 94, 116, 0.14);
+  border-radius: 1.1rem;
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.22), rgba(135, 206, 235, 0.18), rgba(152, 251, 152, 0.18));
 }
 
 /* Cards do dashboard */
@@ -182,13 +234,13 @@ body {
 /* Ajustes gerais */
 .page-title {
   font-weight: 700;
-  color: #16302a;
+  color: #3b2b35;
 }
 
 .form-label {
   font-weight: 600;
   font-size: 0.85rem;
-  color: #33514a;
+  color: #53636b;
 }
 
 .text-muted-2 { color: #7a8b86; }
@@ -201,4 +253,15 @@ body {
   .vet-sidebar, .vet-topbar, footer, .btn, .d-print-none { display: none !important; }
   .card { border: none; box-shadow: none; }
   main { padding: 0 !important; }
+}
+
+@media (max-width: 575.98px) {
+  .univet-login-brand {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .univet-login-logo {
+    margin: 0 auto;
+  }
 }
