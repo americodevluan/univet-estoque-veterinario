@@ -18,5 +18,6 @@ router.use('/movimentacoes', require('./movimentacaoRoutes'));
 router.use('/alertas', require('./alertaRoutes'));
 router.use('/dashboard', require('./dashboardRoutes'));
 router.use('/usuarios', require('./usuarioRoutes'));
+router.use('/relatorios', require('./relatorioRoutes'));
 
 module.exports = router;
