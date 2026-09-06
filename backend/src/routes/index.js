@@ -6,5 +6,6 @@ const router = Router();
 router.use('/categorias', require('./categoriaRoutes'));
 router.use('/fornecedores', require('./fornecedorRoutes'));
 router.use('/produtos', require('./produtoRoutes'));
+router.use('/entradas', require('./entradaRoutes'));
 
 module.exports = router;
