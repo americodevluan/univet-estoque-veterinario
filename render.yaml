@@ -43,7 +43,6 @@ services:
   - type: web
     name: univet-frontend
     runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && echo "VITE_API_URL=https://$API_URL/api" > .env && npm run build
     staticPublishPath: ./dist
