@@ -110,9 +110,19 @@ body {
 
 /* Topbar */
 .vet-topbar {
+  position: relative;
+  z-index: 2000;
+  min-height: 58px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--vet-card-border);
+}
+
+.vet-main-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 /* Tabelas */
@@ -231,6 +241,15 @@ body {
   overflow-y: auto;
 }
 
+.vet-notification-root {
+  z-index: 1200;
+}
+
+.vet-notification-popover {
+  width: min(320px, calc(100vw - 24px));
+  z-index: 9999 !important;
+}
+
 /* Ajustes gerais */
 .page-title {
   font-weight: 700;
@@ -256,6 +275,23 @@ body {
 }
 
 @media (max-width: 575.98px) {
+  .vet-topbar {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .vet-notification-popover {
+    position: fixed !important;
+    top: 58px;
+    right: 0.75rem !important;
+    margin-top: 0 !important;
+    max-height: min(70vh, 420px);
+  }
+
+  .vet-main-content {
+    padding: 0.75rem !important;
+  }
+
   .univet-login-brand {
     grid-template-columns: 1fr;
     text-align: center;

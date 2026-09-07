@@ -26,7 +26,7 @@ function Notificacoes() {
   const total = alertas ? alertas.totais.estoqueBaixo + alertas.totais.vencidos + alertas.totais.vencendo30d : 0;
 
   return (
-    <div className="position-relative" ref={ref}>
+    <div className="vet-notification-root position-relative" ref={ref}>
       <button
         className="btn btn-light position-relative border-0"
         onClick={() => setAberto((v) => !v)}
@@ -42,8 +42,7 @@ function Notificacoes() {
 
       {aberto && alertas && (
         <div
-          className="card position-absolute end-0 mt-2 shadow"
-          style={{ width: 320, zIndex: 1050 }}
+          className="vet-notification-popover card position-absolute end-0 mt-2 shadow"
         >
           <div className="card-header bg-white fw-semibold">Notificações</div>
           <div className="vet-notif-popover list-group list-group-flush">
@@ -183,7 +182,7 @@ export default function MainLayout() {
           </div>
         </header>
 
-        <main className="flex-grow-1 p-3 p-md-4">
+        <main className="vet-main-content flex-grow-1 p-3 p-md-4">
           <Outlet />
         </main>
 
