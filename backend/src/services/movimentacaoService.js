@@ -1,4 +1,5 @@
 const prisma = require('../config/database');
+const ApiError = require('../utils/ApiError');
 
 const MOTIVOS_SAIDA = {
   VENDA: 'Venda',
@@ -23,8 +24,8 @@ async function listarMovimentacoes(filtros = {}) {
     limit = 10,
   } = filtros;
 
-  const whereEntrada = {};
-  const whereSaida = {};
+  const whereEntrada = { oculto: false };
+  const whereSaida = { oculto: false };
 
   if (produtoId) {
     whereEntrada.produtoId = Number(produtoId);
@@ -119,4 +120,28 @@ async function listarMovimentacoes(filtros = {}) {
   };
 }
 
-module.exports = { listarMovimentacoes, MOTIVOS_SAIDA };
+// Oculta (soft delete) uma movimentação: some das listagens, mas o registro
+// permanece no banco para preservar o histórico e a integridade do estoque.
+async function ocultarMovimentacao({ tipo, id }) {
+  const registroId = Number(id);
+
+  if (tipo === 'ENTRADA') {
+    const entrada = await prisma.entrada.update({
+      where: { id: registroId },
+      data: { oculto: true },
+    });
+    return { id: entrada.id, tipo: 'ENTRADA', oculto: true };
+  }
+
+  if (tipo === 'SAIDA') {
+    const saida = await prisma.saida.update({
+      where: { id: registroId },
+      data: { oculto: true },
+    });
+    return { id: saida.id, tipo: 'SAIDA', oculto: true };
+  }
+
+  throw new ApiError(400, 'Tipo de movimentação inválido. Use ENTRADA ou SAIDA.');
+}
+
+module.exports = { listarMovimentacoes, ocultarMovimentacao, MOTIVOS_SAIDA };

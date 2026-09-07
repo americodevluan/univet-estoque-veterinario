@@ -139,6 +139,7 @@ model Entrada {
   usuarioId    Int
   usuario      Usuario    @relation(fields: [usuarioId], references: [id])
   dataEntrada  DateTime   @default(now())
+  oculto       Boolean    @default(false)
 
   @@index([produtoId])
   @@index([dataEntrada])
@@ -160,6 +161,7 @@ model Saida {
   usuarioId    Int
   usuario      Usuario     @relation(fields: [usuarioId], references: [id])
   dataSaida    DateTime    @default(now())
+  oculto       Boolean     @default(false)
 
   @@index([produtoId])
   @@index([dataSaida])

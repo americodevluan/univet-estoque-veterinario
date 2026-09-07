@@ -57,7 +57,7 @@ async function registrar(dados) {
 async function listar(filtros = {}) {
   const { produtoId, motivo, dataInicio, dataFim, page = 1, limit = 10 } = filtros;
 
-  const where = {};
+  const where = { oculto: false };
   if (produtoId) where.produtoId = Number(produtoId);
   if (motivo) where.motivo = motivo;
   if (dataInicio || dataFim) {

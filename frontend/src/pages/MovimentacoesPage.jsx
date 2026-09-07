@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import api, { extrairErro } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import { Loading, EmptyState, Paginacao, formatarDataHora } from '../components/ui';
 
 const MOTIVOS = [
@@ -12,12 +13,14 @@ const MOTIVOS = [
 ];
 
 export default function MovimentacoesPage() {
+  const { isAdmin } = useAuth();
   const [dados, setDados] = useState(null);
   const [page, setPage] = useState(1);
   const [filtros, setFiltros] = useState({ produtoId: '', tipo: '', usuarioId: '', motivo: '', dataInicio: '', dataFim: '' });
   const [produtos, setProdutos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [erro, setErro] = useState('');
+  const [ocultando, setOcultando] = useState(false);
 
   const carregar = useCallback(async () => {
     setErro('');
@@ -48,6 +51,27 @@ export default function MovimentacoesPage() {
   function aplicar(campo, valor) {
     setFiltros((f) => ({ ...f, [campo]: valor }));
     setPage(1);
+  }
+
+  async function ocultar(m) {
+    const ok = window.confirm(
+      `Ocultar ${m.tipo === 'ENTRADA' ? 'entrada' : 'saída'} de "${m.produto}"?\nA movimentação deixará de aparecer no histórico. O estoque não é alterado.`
+    );
+    if (!ok) return;
+    setOcultando(true);
+    setErro('');
+    try {
+      await api.delete(`/movimentacoes/${m.tipo}/${m.id}`);
+      setDados((d) => ({
+        ...d,
+        data: d.data.filter((x) => !(x.id === m.id && x.tipo === m.tipo)),
+        meta: { ...d.meta, total: Math.max(0, d.meta.total - 1) },
+      }));
+    } catch (err) {
+      setErro(extrairErro(err));
+    } finally {
+      setOcultando(false);
+    }
   }
 
   return (
@@ -111,11 +135,12 @@ export default function MovimentacoesPage() {
                 <th>Motivo</th>
                 <th>Cliente / Fornecedor</th>
                 <th>Observação</th>
+                {isAdmin && <th className="text-center">Ações</th>}
               </tr>
             </thead>
             <tbody>
-              {!dados && <tr><td colSpan={8}><Loading /></td></tr>}
-              {dados?.data.length === 0 && <tr><td colSpan={8}><EmptyState /></td></tr>}
+              {!dados && <tr><td colSpan={isAdmin ? 9 : 8}><Loading /></td></tr>}
+              {dados?.data.length === 0 && <tr><td colSpan={isAdmin ? 9 : 8}><EmptyState /></td></tr>}
               {dados?.data.map((m) => (
                 <tr key={m.chave}>
                   <td className="small">{formatarDataHora(m.data)}</td>
@@ -132,6 +157,18 @@ export default function MovimentacoesPage() {
                   <td className="small">{m.motivoLabel}</td>
                   <td className="small">{m.clienteTutor ?? m.fornecedor ?? '—'}</td>
                   <td className="small text-muted">{m.observacao ?? '—'}</td>
+                  {isAdmin && (
+                    <td className="text-center">
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        title="Ocultar movimentação"
+                        disabled={ocultando}
+                        onClick={() => ocultar(m)}
+                      >
+                        <i className="bi bi-eye-slash"></i>
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

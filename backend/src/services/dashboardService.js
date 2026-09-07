@@ -36,10 +36,10 @@ async function obterDashboard() {
       prisma.produto.count(),
       prisma.produto.count({ where: { ativo: true } }),
       obterAlertas(),
-      prisma.entrada.aggregate({ _sum: { quantidade: true }, where: { dataEntrada: { gte: inicioMes } } }),
-      prisma.saida.aggregate({ _sum: { quantidade: true }, where: { dataSaida: { gte: inicioMes } } }),
-      prisma.entrada.findMany({ select: { quantidade: true, dataEntrada: true } }),
-      prisma.saida.findMany({ select: { quantidade: true, dataSaida: true } }),
+      prisma.entrada.aggregate({ _sum: { quantidade: true }, where: { oculto: false, dataEntrada: { gte: inicioMes } } }),
+      prisma.saida.aggregate({ _sum: { quantidade: true }, where: { oculto: false, dataSaida: { gte: inicioMes } } }),
+      prisma.entrada.findMany({ select: { quantidade: true, dataEntrada: true }, where: { oculto: false } }),
+      prisma.saida.findMany({ select: { quantidade: true, dataSaida: true }, where: { oculto: false } }),
       prisma.produto.count({ where: { ativo: true, dataValidade: { lt: hoje } } }),
     ]);
 

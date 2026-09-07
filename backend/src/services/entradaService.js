@@ -44,7 +44,7 @@ async function registrar(dados) {
 async function listar(filtros = {}) {
   const { produtoId, dataInicio, dataFim, page = 1, limit = 10 } = filtros;
 
-  const where = {};
+  const where = { oculto: false };
   if (produtoId) where.produtoId = Number(produtoId);
   if (dataInicio || dataFim) {
     where.dataEntrada = {};

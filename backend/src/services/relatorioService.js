@@ -50,8 +50,8 @@ async function relatorioValidade() {
 
 // Relatório: movimentações em um período
 async function relatorioMovimentacoes({ dataInicio, dataFim }) {
-  const whereEntrada = {};
-  const whereSaida = {};
+  const whereEntrada = { oculto: false };
+  const whereSaida = { oculto: false };
 
   if (dataInicio || dataFim) {
     whereEntrada.dataEntrada = {};
