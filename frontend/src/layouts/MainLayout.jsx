@@ -6,6 +6,7 @@ import api from '../services/api';
 function Notificacoes() {
   const [alertas, setAlertas] = useState(null);
   const [aberto, setAberto] = useState(false);
+  const [lidas, setLidas] = useState(() => sessionStorage.getItem('univetNotifLidas') === '1');
   const ref = useRef(null);
 
   useEffect(() => {
@@ -25,15 +26,29 @@ function Notificacoes() {
 
   const total = alertas ? alertas.totais.estoqueBaixo + alertas.totais.vencidos + alertas.totais.vencendo30d : 0;
 
+  // Ao abrir o painel, as notificações são marcadas como lidas (o selo some).
+  function alternarPainel() {
+    setAberto((v) => !v);
+    if (!lidas) {
+      setLidas(true);
+      sessionStorage.setItem('univetNotifLidas', '1');
+    }
+  }
+
+  function marcarLidas() {
+    setLidas(true);
+    sessionStorage.setItem('univetNotifLidas', '1');
+  }
+
   return (
     <div className="vet-notification-root position-relative" ref={ref}>
       <button
         className="btn btn-light position-relative border-0"
-        onClick={() => setAberto((v) => !v)}
+        onClick={alternarPainel}
         aria-label="Notificações"
       >
         <i className="bi bi-bell fs-5"></i>
-        {total > 0 && (
+        {total > 0 && !lidas && (
           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             {total}
           </span>
@@ -44,7 +59,19 @@ function Notificacoes() {
         <div
           className="vet-notification-popover card position-absolute end-0 mt-2 shadow"
         >
-          <div className="card-header bg-white fw-semibold">Notificações</div>
+          <div className="card-header bg-white d-flex align-items-center justify-content-between gap-2">
+            <span className="fw-semibold">Notificações</span>
+            {total > 0 && lidas && (
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary"
+                onClick={marcarLidas}
+                title="Marcar como lidas"
+              >
+                <i className="bi bi-check2-all me-1"></i>Marcar como lidas
+              </button>
+            )}
+          </div>
           <div className="vet-notif-popover list-group list-group-flush">
             {total === 0 && (
               <div className="list-group-item text-muted">Nenhum alerta no momento.</div>
@@ -86,7 +113,7 @@ function Notificacoes() {
   );
 }
 
-function Sidebar() {
+function Sidebar({ onNavigate }) {
   const { usuario, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -124,6 +151,7 @@ function Sidebar() {
             key={item.to}
             to={item.to}
             end={item.end}
+            onClick={onNavigate}
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
             <i className={`bi ${item.icon}`}></i>
@@ -137,7 +165,7 @@ function Sidebar() {
           <div className="fw-semibold text-white">{usuario?.nome}</div>
           <div>{usuario?.perfil}</div>
         </div>
-        <button className="nav-link w-100 text-start" onClick={sair}>
+        <button className="nav-link w-100 text-start" onClick={() => { sair(); onNavigate?.(); }}>
           <i className="bi bi-box-arrow-right"></i>
           Sair
         </button>
@@ -148,6 +176,7 @@ function Sidebar() {
 
 export default function MainLayout() {
   const { usuario } = useAuth();
+  const [menuAberto, setMenuAberto] = useState(false);
 
   return (
     <div className="d-flex">
@@ -161,9 +190,16 @@ export default function MainLayout() {
       <div className="flex-grow-1 d-flex flex-column min-vh-100">
         <header className="vet-topbar d-flex align-items-center justify-content-between px-3 px-md-4 py-2">
           <div className="d-flex align-items-center gap-2">
-            <span className="d-lg-none fw-bold text-primary">
-              <i className="bi bi-heart-pulse-fill me-1"></i>UniVet
-            </span>
+            <button
+              className="vet-menu-toggle btn btn-light d-lg-none border-0"
+              type="button"
+              aria-label="Abrir menu"
+              aria-expanded={menuAberto}
+              onClick={() => setMenuAberto(true)}
+            >
+              <i className="bi bi-list fs-4"></i>
+            </button>
+            <span className="d-lg-none fw-bold text-primary">UniVet</span>
             <span className="text-muted d-none d-sm-inline small">
               Clínica Veterinária Fernanda Calixto
             </span>
@@ -190,6 +226,30 @@ export default function MainLayout() {
           UniVet — Projeto Integrador · Clínica Veterinária Fernanda Calixto
         </footer>
       </div>
+
+      {menuAberto && (
+        <div className="vet-mobile-menu-layer d-lg-none">
+          <button
+            className="vet-mobile-menu-backdrop"
+            type="button"
+            aria-label="Fechar menu"
+            onClick={() => setMenuAberto(false)}
+          />
+          <aside className="vet-mobile-sidebar">
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn btn-light border-0"
+                type="button"
+                aria-label="Fechar menu"
+                onClick={() => setMenuAberto(false)}
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+            <Sidebar onNavigate={() => setMenuAberto(false)} />
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
