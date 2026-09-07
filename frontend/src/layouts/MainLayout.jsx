@@ -25,14 +25,12 @@ function Notificacoes() {
   }, []);
 
   const total = alertas ? alertas.totais.estoqueBaixo + alertas.totais.vencidos + alertas.totais.vencendo30d : 0;
+  const temNovas = total > 0 && !lidas;
 
-  // Ao abrir o painel, as notificações são marcadas como lidas (o selo some).
+  // Abrir o painel NÃO marca como lidas: os alertas continuam visíveis
+  // até o usuário clicar em "Marcar como lidas".
   function alternarPainel() {
     setAberto((v) => !v);
-    if (!lidas) {
-      setLidas(true);
-      sessionStorage.setItem('univetNotifLidas', '1');
-    }
   }
 
   function marcarLidas() {
@@ -48,7 +46,7 @@ function Notificacoes() {
         aria-label="Notificações"
       >
         <i className="bi bi-bell fs-5"></i>
-        {total > 0 && !lidas && (
+        {temNovas && (
           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             {total}
           </span>
@@ -61,21 +59,21 @@ function Notificacoes() {
         >
           <div className="card-header bg-white d-flex align-items-center justify-content-between gap-2">
             <span className="fw-semibold">Notificações</span>
-            {total > 0 && lidas && (
+            {temNovas && (
               <button
                 type="button"
-                className="btn btn-sm btn-outline-secondary"
+                className="btn btn-sm btn-outline-primary"
                 onClick={marcarLidas}
-                title="Marcar como lidas"
               >
                 <i className="bi bi-check2-all me-1"></i>Marcar como lidas
               </button>
             )}
           </div>
           <div className="vet-notif-popover list-group list-group-flush">
-            {total === 0 && (
+            {total === 0 || lidas ? (
               <div className="list-group-item text-muted">Nenhum alerta no momento.</div>
-            )}
+            ) : (
+            <>
             {alertas.totais.estoqueBaixo > 0 && (
               <div className="list-group-item">
                 <span className="badge badge-baixo me-2">Estoque baixo</span>
@@ -105,6 +103,8 @@ function Notificacoes() {
                 <span className="badge badge-vencendo me-2">Vencendo 30d</span>
                 {alertas.totais.vencendo30d} produto(s) vencem nos próximos 30 dias.
               </div>
+            )}
+            </>
             )}
           </div>
         </div>
