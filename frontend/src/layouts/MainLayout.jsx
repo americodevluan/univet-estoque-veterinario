@@ -6,14 +6,26 @@ import api from '../services/api';
 function Notificacoes() {
   const [alertas, setAlertas] = useState(null);
   const [aberto, setAberto] = useState(false);
-  const [lidas, setLidas] = useState(() => sessionStorage.getItem('univetNotifLidas') === '1');
+  // Guarda a "impressão digital" dos alertas no momento em que foram marcados como lidos.
+  const [lidasFp, setLidasFp] = useState(() => sessionStorage.getItem('univetNotifFp') || '');
   const ref = useRef(null);
 
-  useEffect(() => {
+  function carregarAlertas() {
     api
       .get('/alertas')
       .then((r) => setAlertas(r.data))
       .catch(() => setAlertas(null));
+  }
+
+  useEffect(() => {
+    carregarAlertas();
+    // Busca novamente a cada 30s e ao voltar para a aba: novos alertas aparecem sozinhos.
+    const id = setInterval(carregarAlertas, 30000);
+    window.addEventListener('focus', carregarAlertas);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener('focus', carregarAlertas);
+    };
   }, []);
 
   useEffect(() => {
@@ -25,7 +37,21 @@ function Notificacoes() {
   }, []);
 
   const total = alertas ? alertas.totais.estoqueBaixo + alertas.totais.vencidos + alertas.totais.vencendo30d : 0;
-  const temNovas = total > 0 && !lidas;
+
+  // Fingerprint = ids dos produtos em alerta + totais. Mudou? São alertas novos.
+  function fingerprint() {
+    if (!alertas) return '';
+    const ids = [
+      ...(alertas.estoqueBaixo || []).map((p) => p.id),
+      ...(alertas.vencidos || []).map((p) => p.id),
+      ...(alertas.vencendo || []).map((p) => p.id),
+    ]
+      .sort((a, b) => a - b)
+      .join(',');
+    return `${alertas.totais.estoqueBaixo}|${alertas.totais.vencidos}|${alertas.totais.vencendo30d}|${ids}`;
+  }
+
+  const temNovas = total > 0 && fingerprint() !== lidasFp;
 
   // Abrir o painel NÃO marca como lidas: os alertas continuam visíveis
   // até o usuário clicar em "Marcar como lidas".
@@ -34,8 +60,9 @@ function Notificacoes() {
   }
 
   function marcarLidas() {
-    setLidas(true);
-    sessionStorage.setItem('univetNotifLidas', '1');
+    const fp = fingerprint();
+    setLidasFp(fp);
+    sessionStorage.setItem('univetNotifFp', fp);
   }
 
   return (
@@ -70,7 +97,7 @@ function Notificacoes() {
             )}
           </div>
           <div className="vet-notif-popover list-group list-group-flush">
-            {total === 0 || lidas ? (
+            {total === 0 || !temNovas ? (
               <div className="list-group-item text-muted">Nenhum alerta no momento.</div>
             ) : (
             <>
