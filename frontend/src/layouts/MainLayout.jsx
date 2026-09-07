@@ -19,8 +19,10 @@ function Notificacoes() {
 
   useEffect(() => {
     carregarAlertas();
-    // Busca novamente a cada 30s e ao voltar para a aba: novos alertas aparecem sozinhos.
-    const id = setInterval(carregarAlertas, 30000);
+    // Busca novamente a cada 10 minutos e ao voltar para a aba:
+    // novos produtos (inclusive cadastrados agora, se ficarem em estoque baixo)
+    // aparecem sozinhos na notificação.
+    const id = setInterval(carregarAlertas, 600000);
     window.addEventListener('focus', carregarAlertas);
     return () => {
       clearInterval(id);
@@ -106,7 +108,7 @@ function Notificacoes() {
                 <span className="badge badge-baixo me-2">Estoque baixo</span>
                 {alertas.totais.estoqueBaixo} produto(s) abaixo do estoque mínimo.
                 <ul className="small text-muted mt-1 mb-0 ps-3">
-                  {alertas.estoqueBaixo.slice(0, 5).map((p) => (
+                  {alertas.estoqueBaixo.slice(0, 10).map((p) => (
                     <li key={p.id}>
                       {p.nome} — {p.quantidadeAtual} / mín {p.quantidadeMinima}
                     </li>
@@ -119,7 +121,7 @@ function Notificacoes() {
                 <span className="badge badge-vencido me-2">Vencidos</span>
                 {alertas.totais.vencidos} produto(s) vencido(s).
                 <ul className="small text-muted mt-1 mb-0 ps-3">
-                  {alertas.vencidos.slice(0, 5).map((p) => (
+                  {alertas.vencidos.slice(0, 10).map((p) => (
                     <li key={p.id}>{p.nome} — validade {new Date(p.dataValidade).toLocaleDateString('pt-BR')}</li>
                   ))}
                 </ul>
