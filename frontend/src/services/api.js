@@ -17,9 +17,10 @@ api.interceptors.response.use(
     if (err.response?.status === 401 && !err.config.url.includes('/auth/login')) {
       localStorage.removeItem('token');
       localStorage.removeItem('usuario');
-      if (!window.location.pathname.startsWith('/login')) {
-        window.location.href = '/login';
-      }
+      sessionStorage.setItem('sessaoExpirada', '1');
+      // Navegação client-side: o AuthContext limpa o estado e o RequireAuth
+      // redireciona para /login via React Router (sem consultar o servidor).
+      window.dispatchEvent(new Event('auth:expired'));
     }
     return Promise.reject(err);
   }

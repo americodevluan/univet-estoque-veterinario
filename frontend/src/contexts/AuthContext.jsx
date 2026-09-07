@@ -1,22 +1,36 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import api from '../services/api';
 
 const AuthContext = createContext(null);
 
+function lerUsuarioLocal() {
+  try {
+    return JSON.parse(localStorage.getItem('usuario')) || null;
+  } catch {
+    return null;
+  }
+}
+
+// Retorna true se o token JWT já expirou (payload.exp em segundos)
+function tokenExpirado(token) {
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return false;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem('usuario')) || null;
-    } catch {
-      return null;
-    }
-  });
+  const [usuario, setUsuario] = useState(lerUsuarioLocal);
   const [token, setToken] = useState(() => localStorage.getItem('token'));
 
   const login = useCallback(async (email, senha) => {
     const { data } = await api.post('/auth/login', { email, senha });
     localStorage.setItem('token', data.token);
     localStorage.setItem('usuario', JSON.stringify(data.usuario));
+    sessionStorage.removeItem('sessaoExpirada');
     setToken(data.token);
     setUsuario(data.usuario);
     return data.usuario;
@@ -28,6 +42,21 @@ export function AuthProvider({ children }) {
     setToken(null);
     setUsuario(null);
   }, []);
+
+  // Token expirado no carregamento: encerra a sessão imediatamente.
+  useEffect(() => {
+    if (token && tokenExpirado(token)) {
+      sessionStorage.setItem('sessaoExpirada', '1');
+      logout();
+    }
+  }, [token, logout]);
+
+  // Evento disparado pelo interceptor da API ao receber 401 (token expirado).
+  useEffect(() => {
+    const handleExpired = () => logout();
+    window.addEventListener('auth:expired', handleExpired);
+    return () => window.removeEventListener('auth:expired', handleExpired);
+  }, [logout]);
 
   const value = {
     usuario,

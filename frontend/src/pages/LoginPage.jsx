@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
+  const [sessaoExpirada] = useState(() => sessionStorage.getItem('sessaoExpirada') === '1');
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -38,6 +39,12 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
+
+        {sessaoExpirada && (
+          <div className="alert alert-warning py-2 small" role="alert">
+            <i className="bi bi-clock-history me-1"></i>Sua sessão expirou. Faça login novamente.
+          </div>
+        )}
 
         {erro && (
           <div className="alert alert-danger py-2 small" role="alert">
