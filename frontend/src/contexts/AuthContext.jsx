@@ -31,6 +31,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('usuario', JSON.stringify(data.usuario));
     sessionStorage.removeItem('sessaoExpirada');
+    // Sempre que logar novamente, os alertas voltam a aparecer como novos.
+    sessionStorage.removeItem('univetNotifFp');
     setToken(data.token);
     setUsuario(data.usuario);
     return data.usuario;
@@ -39,6 +41,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
+    sessionStorage.removeItem('univetNotifFp');
     setToken(null);
     setUsuario(null);
   }, []);
